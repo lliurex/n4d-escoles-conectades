@@ -1,0 +1,14 @@
+{
+    "SETUP": {
+        "type": "python",
+        "path": "EscolesConectades.py",
+        "class": "EscolesConectades"
+    },
+    "METHODS": {
+        "scan_network": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        }
+    }
+}
