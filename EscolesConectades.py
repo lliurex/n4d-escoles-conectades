@@ -2,28 +2,68 @@ import n4d.responses
 
 import NetworkManager as nm
 
+import asyncio
+import time
+import dbus
+import sys
 
 class EscolesConectades:
 
 	ERROR_NO_WIFI_DEV = -1
 
 	def __init__(self):
-		pass
+		self.semaphore = asyncio.Semaphore(1)
 
 
 	def scan_network(self):
-		wifi = None
-		for device in nm.Device.all():
-			if (device.DeviceType == nm.NM_DEVICE_TYPE_WIFI):
-				wifi = device
-				break
+		async with self.semaphore:
+			wifi = None
+			for device in nm.Device.all():
+				if (device.DeviceType == nm.NM_DEVICE_TYPE_WIFI):
+					wifi = device
+					break
 
-		if (not wifi):
-			return n4d.responses.build_failed_call_response(EscolesConectades.ERROR_NO_WIFI_DEV,"No wireless device available")
+			if (not wifi):
+				return n4d.responses.build_failed_call_response(EscolesConectades.ERROR_NO_WIFI_DEV,"No wireless device available")
+			try:
+				wifi.RequestScan([])
+			except Exception as e:
+				#perhaps a scan is going on...
+				time.sleep(2.0)
 
-		wifi.RequestScan([])
-		aps = []
-		for ap in wifi.AccessPoints:
-			aps.append([ap.Ssid,ap.Strength])
+			aps = []
+			for ap in wifi.AccessPoints:
+				aps.append([ap.Ssid,ap.Strength])
 
-		return n4d.responses.build_successful_call_response(aps)
+			return n4d.responses.build_successful_call_response(aps)
+
+	def create_connection(self,name,ssid,user,password):
+		async with self.semaphore:
+			connection = {}
+			connection["connection"] = {}
+			connection["connection"]["id"] = name
+			connection["connection"]["type"] = "802-11-wireless"
+			#connection["connection"]["permissions"] = []
+			#connection["connection"]["interface-name"] = "wlan0"
+
+			connection["802-11-wireless"] = {}
+			connection["802-11-wireless"]["ssid"] = dbus.ByteArray(bytes(ssid,'utf-8'))
+			connection["802-11-wireless"]["mode"] = "infrastructure"
+
+			connection["802-11-wireless-security"] = {}
+			#connection["802-11-wireless-security"]["auth-alg"] = "open"
+			connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
+			#connection["802-11-wireless-security"]["psk"] = ""
+
+			connection["802-1x"] = {}
+			connection["802-1x"]["eap"] = ["peap"]
+			connection["802-1x"]["identity"] = user
+			connection["802-1x"]["password"] = password
+			connection["802-1x"]["phase2-auth"] = "mschapv2"
+
+			connection["ipv4"] = {}
+			connection["ipv4"]["method"] = "auto"
+
+			tmp = nm.Settings.AddConnection2(connection,0x02,[])
+
+			return n4d.responses.build_successful_call_response()

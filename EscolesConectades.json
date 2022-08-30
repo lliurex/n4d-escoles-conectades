@@ -9,6 +9,11 @@
             "allowed_groups": [
                 "anonymous"
             ]
+        },
+        "create_connection": {
+            "allowed_groups": [
+                "anonymous"
+            ]
         }
     }
 }
