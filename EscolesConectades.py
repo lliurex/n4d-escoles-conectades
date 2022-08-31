@@ -43,7 +43,7 @@ class EscolesConectades:
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			#connection["connection"]["permissions"] = []
+			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
@@ -64,6 +64,21 @@ class EscolesConectades:
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
 
+			# This magic flag 0x02 renders connection volatile, so it will be destroyed on next boot
 			tmp = nm.Settings.AddConnection2(connection,0x02,[])
 
 			return n4d.responses.build_successful_call_response()
+
+	def get_active_connections(self):
+		async with self.semaphore:
+			connections=[]
+			for connection in nm.NetworkManager.ActiveConnections:
+				connections.append(connection.Id)
+
+			return n4d.responses.build_successful_call_response(connections[])
+
+	def disconnect_all(self):
+		async with self.semaphore:
+
+		for connection in nm.NetworkManager.ActiveConnections:
+			nm.NetworkManager.DeactivateConnection(connection)
