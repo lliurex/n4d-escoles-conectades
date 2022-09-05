@@ -2,7 +2,7 @@ import n4d.responses
 
 import NetworkManager as nm
 
-import asyncio
+import threading
 import time
 import dbus
 import sys
@@ -12,11 +12,11 @@ class EscolesConectades:
 	ERROR_NO_WIFI_DEV = -1
 
 	def __init__(self):
-		self.semaphore = asyncio.Semaphore(1)
+		self.semaphore = threading.Semaphore(1)
 
 
 	def scan_network(self):
-		async with self.semaphore:
+		with self.semaphore:
 			wifi = None
 			for device in nm.Device.all():
 				if (device.DeviceType == nm.NM_DEVICE_TYPE_WIFI):
@@ -38,7 +38,7 @@ class EscolesConectades:
 			return n4d.responses.build_successful_call_response(aps)
 
 	def create_connection(self,name,ssid,user,password):
-		async with self.semaphore:
+		with self.semaphore:
 			connection = {}
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
@@ -70,15 +70,15 @@ class EscolesConectades:
 			return n4d.responses.build_successful_call_response()
 
 	def get_active_connections(self):
-		async with self.semaphore:
+		with self.semaphore:
 			connections=[]
 			for connection in nm.NetworkManager.ActiveConnections:
 				connections.append(connection.Id)
 
-			return n4d.responses.build_successful_call_response(connections[])
+			return n4d.responses.build_successful_call_response(connections)
 
 	def disconnect_all(self):
-		async with self.semaphore:
+		with self.semaphore:
 
-		for connection in nm.NetworkManager.ActiveConnections:
-			nm.NetworkManager.DeactivateConnection(connection)
+			for connection in nm.NetworkManager.ActiveConnections:
+				nm.NetworkManager.DeactivateConnection(connection)
