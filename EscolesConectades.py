@@ -14,11 +14,28 @@ class EscolesConectades:
 	def __init__(self):
 		self.semaphore = threading.Semaphore(1)
 
+	def get_devices(self):
+	# This is a workaround because current python3-networkmanager version (2.1)
+	# does not support device types bigger than 26 and crash
+		devices = []
+
+		for n in range(1,32):
+			try:
+				dev = nm.Device("/org/freedesktop/NetworkManager/Devices/{0}".format(n))
+				devices.append(dev)
+			except dbus.DBusException:
+				break
+			except KeyError:
+				#catch bug and ignore device, any way is not a wifi device we are interested in
+				continue
+
+
+		return devices
 
 	def scan_network(self):
 		with self.semaphore:
 			wifi = None
-			for device in nm.Device.all():
+			for device in self.get_devices():
 				if (device.DeviceType == nm.NM_DEVICE_TYPE_WIFI):
 					wifi = device
 					break
