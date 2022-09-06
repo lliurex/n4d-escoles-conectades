@@ -43,7 +43,11 @@ class EscolesConectades:
 			if (not wifi):
 				return n4d.responses.build_failed_call_response(EscolesConectades.ERROR_NO_WIFI_DEV,"No wireless device available")
 			try:
+				last = wifi.LastScan
 				wifi.RequestScan([])
+				while wifi.LastScan<=last:
+					time.sleep(0.5)
+
 			except Exception as e:
 				#perhaps a scan is going on...
 				time.sleep(2.0)
