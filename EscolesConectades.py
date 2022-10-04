@@ -102,4 +102,7 @@ class EscolesConectades:
 		with self.semaphore:
 
 			for connection in nm.NetworkManager.ActiveConnections:
-				nm.NetworkManager.DeactivateConnection(connection)
+				if (connection.Type=="802-11-wireless"):
+					nm.NetworkManager.DeactivateConnection(connection)
+
+			return n4d.responses.build_successful_call_response()
