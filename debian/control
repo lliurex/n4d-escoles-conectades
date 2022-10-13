@@ -1,0 +1,13 @@
+Source: n4d-escoles-conectades
+Section: misc
+Priority: standard
+Maintainer: Equipo LliureX <lliurex@gva.es>
+Build-Depends: debhelper (>= 7), python3, n4d(>=0.900), python3-networkmanager
+Standards-Version: 3.9.3
+
+Package: n4d-escoles-conectades
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3, n4d(>=0.900), python3-networkmanager
+Description: Escoles Conectades N4D helper plugin
+ This N4D plugin allows to create a network manager connection compatible with Escoles Conectades WPA
+
