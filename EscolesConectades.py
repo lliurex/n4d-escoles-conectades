@@ -1,4 +1,4 @@
-/*
+"""
     N4D Escoles Conectades
 
     Copyright (C) 2022  Enrique Medina Gremaldos <quiqueiii@gmail.com>
@@ -15,7 +15,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+"""
 
 import n4d.responses
 
@@ -77,13 +77,13 @@ class EscolesConectades:
 
 			return n4d.responses.build_successful_call_response(aps)
 
-	def create_connection(self,name,ssid,user,password):
+	def create_connection(self,name,ssid,user,password,wpa_mode):
 		with self.semaphore:
 			connection = {}
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
@@ -91,15 +91,18 @@ class EscolesConectades:
 			connection["802-11-wireless"]["mode"] = "infrastructure"
 
 			connection["802-11-wireless-security"] = {}
-			#connection["802-11-wireless-security"]["auth-alg"] = "open"
-			connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
-			#connection["802-11-wireless-security"]["psk"] = ""
+			if wpa_mode=="enterprise":
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
+				connection["802-1x"] = {}
+				connection["802-1x"]["eap"] = ["peap"]
+				connection["802-1x"]["identity"] = user
+				connection["802-1x"]["password"] = password
+				connection["802-1x"]["phase2-auth"] = "mschapv2"
 
-			connection["802-1x"] = {}
-			connection["802-1x"]["eap"] = ["peap"]
-			connection["802-1x"]["identity"] = user
-			connection["802-1x"]["password"] = password
-			connection["802-1x"]["phase2-auth"] = "mschapv2"
+			else:
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+				#connection["802-11-wireless-security"]["auth-alg"] = "open"
+				connection["802-11-wireless-security"]["psk"] = password
 
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
