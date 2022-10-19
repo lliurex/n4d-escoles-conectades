@@ -25,6 +25,12 @@ import threading
 import time
 import dbus
 import sys
+import hashlib
+import binascii
+
+def _wpa_psk(ssid,password):
+	dk = hashlib.pbkdf2_hmac('sha1', str.encode(password), str.encode(ssid), 4096, 32)
+	return binascii.hexlify(dk).decode('utf-8')
 
 class EscolesConectades:
 
@@ -79,11 +85,23 @@ class EscolesConectades:
 
 	def create_connection(self,name,ssid,user,password,wpa_mode):
 		with self.semaphore:
+
+			ec = None
+
+			for c in nm.Settings.Connections:
+				if c.GetSettings()["connection"]["id"] == name:
+					ec = c
+					break
+			if ec:
+				ec.Delete()
+
+
 			connection = {}
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			#connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
@@ -102,7 +120,7 @@ class EscolesConectades:
 			else:
 				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
 				#connection["802-11-wireless-security"]["auth-alg"] = "open"
-				connection["802-11-wireless-security"]["psk"] = password
+				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
 
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
