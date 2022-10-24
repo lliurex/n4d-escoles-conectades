@@ -27,6 +27,7 @@ import dbus
 import sys
 import hashlib
 import binascii
+import os
 
 def _wpa_psk(ssid,password):
 	dk = hashlib.pbkdf2_hmac('sha1', str.encode(password), str.encode(ssid), 4096, 32)
@@ -100,8 +101,8 @@ class EscolesConectades:
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
-			#connection["connection"]["permissions"] = ["user:root:"]
+			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
@@ -127,6 +128,7 @@ class EscolesConectades:
 
 			# This magic flag 0x02 renders connection volatile, so it will be destroyed on next boot
 			tmp = nm.Settings.AddConnection2(connection,0x02,[])
+			nm.NetworkManager.ActivateConnection(dbus.types.String(tmp[0].object_path),dbus.types.String("/"),dbus.types.String("/"))
 
 			return n4d.responses.build_successful_call_response()
 
