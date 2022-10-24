@@ -134,9 +134,18 @@ class EscolesConectades:
 		with self.semaphore:
 			connections=[]
 			for connection in nm.NetworkManager.ActiveConnections:
-				connections.append(connection.Id)
+				connections.append([connection.Id,connection.Type])
 
 			return n4d.responses.build_successful_call_response(connections)
+
+	def check_wired_connection(self):
+		connections = self.get_active_connections()
+
+		for connection in connections:
+			if connection[1] == "802-3-ethernet":
+				return n4d.responses.build_successful_call_response(True)
+
+		return n4d.responses.build_successful_call_response(False)
 
 	def disconnect_all(self):
 		with self.semaphore:
