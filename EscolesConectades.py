@@ -142,8 +142,7 @@ class EscolesConectades:
 
 	def check_wired_connection(self):
 		connections = self.get_active_connections()
-
-		for connection in connections:
+		for connection in connections["return"]:
 			if connection[1] == "802-3-ethernet":
 				return n4d.responses.build_successful_call_response(True)
 
