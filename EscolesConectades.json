@@ -20,6 +20,11 @@
                 "anonymous"
             ]
         },
+        "check_wired_connection": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
         "disconnect_all": {
             "allowed_groups": [
                 "anonymous"

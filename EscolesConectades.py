@@ -1,4 +1,4 @@
-/*
+"""
     N4D Escoles Conectades
 
     Copyright (C) 2022  Enrique Medina Gremaldos <quiqueiii@gmail.com>
@@ -15,7 +15,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+"""
 
 import n4d.responses
 
@@ -25,6 +25,13 @@ import threading
 import time
 import dbus
 import sys
+import hashlib
+import binascii
+import os
+
+def _wpa_psk(ssid,password):
+	dk = hashlib.pbkdf2_hmac('sha1', str.encode(password), str.encode(ssid), 4096, 32)
+	return binascii.hexlify(dk).decode('utf-8')
 
 class EscolesConectades:
 
@@ -77,13 +84,25 @@ class EscolesConectades:
 
 			return n4d.responses.build_successful_call_response(aps)
 
-	def create_connection(self,name,ssid,user,password):
+	def create_connection(self,name,ssid,user,password,wpa_mode):
 		with self.semaphore:
+
+			ec = None
+
+			for c in nm.Settings.Connections:
+				if c.GetSettings()["connection"]["id"] == name:
+					ec = c
+					break
+			if ec:
+				ec.Delete()
+
+
 			connection = {}
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			#connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
@@ -91,21 +110,25 @@ class EscolesConectades:
 			connection["802-11-wireless"]["mode"] = "infrastructure"
 
 			connection["802-11-wireless-security"] = {}
-			#connection["802-11-wireless-security"]["auth-alg"] = "open"
-			connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
-			#connection["802-11-wireless-security"]["psk"] = ""
+			if wpa_mode=="enterprise":
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
+				connection["802-1x"] = {}
+				connection["802-1x"]["eap"] = ["peap"]
+				connection["802-1x"]["identity"] = user
+				connection["802-1x"]["password"] = password
+				connection["802-1x"]["phase2-auth"] = "mschapv2"
 
-			connection["802-1x"] = {}
-			connection["802-1x"]["eap"] = ["peap"]
-			connection["802-1x"]["identity"] = user
-			connection["802-1x"]["password"] = password
-			connection["802-1x"]["phase2-auth"] = "mschapv2"
+			else:
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+				#connection["802-11-wireless-security"]["auth-alg"] = "open"
+				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
 
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
 
 			# This magic flag 0x02 renders connection volatile, so it will be destroyed on next boot
 			tmp = nm.Settings.AddConnection2(connection,0x02,[])
+			nm.NetworkManager.ActivateConnection(dbus.types.String(tmp[0].object_path),dbus.types.String("/"),dbus.types.String("/"))
 
 			return n4d.responses.build_successful_call_response()
 
@@ -113,9 +136,17 @@ class EscolesConectades:
 		with self.semaphore:
 			connections=[]
 			for connection in nm.NetworkManager.ActiveConnections:
-				connections.append(connection.Id)
+				connections.append([connection.Id,connection.Type])
 
 			return n4d.responses.build_successful_call_response(connections)
+
+	def check_wired_connection(self):
+		connections = self.get_active_connections()
+		for connection in connections["return"]:
+			if connection[1] == "802-3-ethernet":
+				return n4d.responses.build_successful_call_response(True)
+
+		return n4d.responses.build_successful_call_response(False)
 
 	def disconnect_all(self):
 		with self.semaphore:
