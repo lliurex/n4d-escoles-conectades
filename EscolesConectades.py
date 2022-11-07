@@ -102,7 +102,7 @@ class EscolesConectades:
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
 			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
-			connection["connection"]["permissions"] = ["user:root:"]
+			#connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
 			connection["802-11-wireless"] = {}
