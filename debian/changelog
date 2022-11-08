@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.0.0.1) lliurex22; urgency=medium
+
+  * Added N4D variables
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Tue, 08 Nov 2022 09:43:58 +0100
+
 n4d-escoles-conectades (1.0.0.0) lliurex22; urgency=medium
 
   * Initial release.
