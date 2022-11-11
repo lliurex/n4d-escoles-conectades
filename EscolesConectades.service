@@ -1,0 +1,9 @@
+[Unit]
+Description=turn down Escoles Conectades wireless
+
+[Service]
+Type=forking
+ExecStop=/usr/bin/n4d-client call EscolesConectades.disconnect $USER
+
+[Install]
+WantedBy=default.target
