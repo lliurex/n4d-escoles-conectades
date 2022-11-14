@@ -39,6 +39,7 @@ class EscolesConectades:
 
 	def __init__(self):
 		self.semaphore = threading.Semaphore(1)
+		self.user_connections = {}
 
 	def get_devices(self):
 	# This is a workaround because current python3-networkmanager version (2.1)
@@ -101,7 +102,7 @@ class EscolesConectades:
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
 			#connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
@@ -128,6 +129,8 @@ class EscolesConectades:
 
 			# This magic flag 0x02 renders connection volatile, so it will be destroyed on next boot
 			tmp = nm.Settings.AddConnection2(connection,0x02,[])
+
+			self.user_connections[user] = tmp
 			nm.NetworkManager.ActivateConnection(dbus.types.String(tmp[0].object_path),dbus.types.String("/"),dbus.types.String("/"))
 
 			return n4d.responses.build_successful_call_response()
@@ -154,5 +157,14 @@ class EscolesConectades:
 			for connection in nm.NetworkManager.ActiveConnections:
 				if (connection.Type=="802-11-wireless"):
 					nm.NetworkManager.DeactivateConnection(connection)
+
+			return n4d.responses.build_successful_call_response()
+
+	def disconnect(self,user):
+		with self.semaphore:
+			connection = self.user_connections.get(user)
+
+			if not connection==None:
+				nm.NetworkManager.DeactivateConnection(connection[0].object_path)
 
 			return n4d.responses.build_successful_call_response()
