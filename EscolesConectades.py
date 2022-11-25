@@ -111,18 +111,17 @@ class EscolesConectades:
 			connection["802-11-wireless"]["mode"] = "infrastructure"
 
 			connection["802-11-wireless-security"] = {}
-			if wpa_mode=="enterprise":
+			if wpa_mode=="personal":
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+				#connection["802-11-wireless-security"]["auth-alg"] = "open"
+				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
+			else:
 				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
 				connection["802-1x"] = {}
 				connection["802-1x"]["eap"] = ["peap"]
 				connection["802-1x"]["identity"] = user
 				connection["802-1x"]["password"] = password
 				connection["802-1x"]["phase2-auth"] = "mschapv2"
-
-			else:
-				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
-				#connection["802-11-wireless-security"]["auth-alg"] = "open"
-				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
 
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
