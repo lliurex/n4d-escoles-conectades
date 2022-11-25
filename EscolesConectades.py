@@ -18,6 +18,7 @@
 """
 
 import n4d.responses
+import n4d.server.core
 
 import NetworkManager as nm
 
@@ -167,3 +168,11 @@ class EscolesConectades:
 				nm.NetworkManager.DeactivateConnection(connection[0].object_path)
 
 			return n4d.responses.build_successful_call_response()
+
+	def get_settings(self):
+		var = n4d.server.core.Core.get_core().get_variable("SDDM_ESCOLES_CONECTADES")
+		return n4d.responses.build_successful_call_response(var["return"])
+
+	def set_settings(self,value):
+		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES",value)
+		return n4d.responses.build_successful_call_response()
