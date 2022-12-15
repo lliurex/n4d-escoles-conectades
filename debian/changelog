@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.0.3.0) lliurex22; urgency=medium
+
+  * Fix missing n4d method settings
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 15 Dec 2022 15:47:42 +0100
+
 n4d-escoles-conectades (1.0.2.0) lliurex22; urgency=medium
 
   * Using anonymous access
