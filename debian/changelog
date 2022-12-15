@@ -1,3 +1,11 @@
+n4d-escoles-conectades (1.0.2.0) lliurex22; urgency=medium
+
+  * Using anonymous access
+  * Fixed missing quote on json variable file
+  * Using enterprise connection as default
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Fri, 25 Nov 2022 11:24:09 +0100
+
 n4d-escoles-conectades (1.0.1.0) lliurex22; urgency=medium
 
   * Added a systemd user service for closing running connections
