@@ -6,33 +6,43 @@
     },
     "METHODS": {
         "scan_network": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
             ]
         },
         "create_connection": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
             ]
         },
         "get_active_connections": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
             ]
         },
         "check_wired_connection": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
             ]
         },
         "disconnect_all": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
             ]
         },
         "disconnect": {
-            "allowed_users": [
-                "root","sddm"
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_settings" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "set_settings" : {
+            "allowed_groups": [
+                "anonymous"
             ]
         }
     }

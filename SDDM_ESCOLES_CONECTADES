@@ -3,6 +3,6 @@
     {
         "value":0,
         "volatile":false,
-        "description": BIT 0: Enabled/Disabled. BIT 1: ALU/PROF"
+        "description": "BIT 0: Enabled/Disabled. BIT 1: ALU/PROF"
     }
 }

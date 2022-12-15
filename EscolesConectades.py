@@ -18,6 +18,7 @@
 """
 
 import n4d.responses
+import n4d.server.core
 
 import NetworkManager as nm
 
@@ -111,18 +112,17 @@ class EscolesConectades:
 			connection["802-11-wireless"]["mode"] = "infrastructure"
 
 			connection["802-11-wireless-security"] = {}
-			if wpa_mode=="enterprise":
+			if wpa_mode=="personal":
+				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
+				#connection["802-11-wireless-security"]["auth-alg"] = "open"
+				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
+			else:
 				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-eap"
 				connection["802-1x"] = {}
 				connection["802-1x"]["eap"] = ["peap"]
 				connection["802-1x"]["identity"] = user
 				connection["802-1x"]["password"] = password
 				connection["802-1x"]["phase2-auth"] = "mschapv2"
-
-			else:
-				connection["802-11-wireless-security"]["key-mgmt"] = "wpa-psk"
-				#connection["802-11-wireless-security"]["auth-alg"] = "open"
-				connection["802-11-wireless-security"]["psk"] = _wpa_psk(ssid,password)
 
 			connection["ipv4"] = {}
 			connection["ipv4"]["method"] = "auto"
@@ -168,3 +168,11 @@ class EscolesConectades:
 				nm.NetworkManager.DeactivateConnection(connection[0].object_path)
 
 			return n4d.responses.build_successful_call_response()
+
+	def get_settings(self):
+		var = n4d.server.core.Core.get_core().get_variable("SDDM_ESCOLES_CONECTADES")
+		return n4d.responses.build_successful_call_response(var["return"])
+
+	def set_settings(self,value):
+		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES",value)
+		return n4d.responses.build_successful_call_response()
