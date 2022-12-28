@@ -29,6 +29,7 @@ import sys
 import hashlib
 import binascii
 import os
+import dbus
 
 def _wpa_psk(ssid,password):
 	dk = hashlib.pbkdf2_hmac('sha1', str.encode(password), str.encode(ssid), 4096, 32)
@@ -37,6 +38,7 @@ def _wpa_psk(ssid,password):
 class EscolesConectades:
 
 	ERROR_NO_WIFI_DEV = -1
+	ERROR_WAITING_FOR_DOMAIN = -2
 
 	def __init__(self):
 		self.semaphore = threading.Semaphore(1)
@@ -103,7 +105,7 @@ class EscolesConectades:
 			connection["connection"] = {}
 			connection["connection"]["id"] = name
 			connection["connection"]["type"] = "802-11-wireless"
-			connection["connection"]["permissions"] = ["user:{0}:".format(user)]
+			#connection["connection"]["permissions"] = ["user:{0}:".format(user)]
 			#connection["connection"]["permissions"] = ["user:root:"]
 			#connection["connection"]["interface-name"] = "wlan0"
 
@@ -176,3 +178,21 @@ class EscolesConectades:
 	def set_settings(self,value):
 		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES",value)
 		return n4d.responses.build_successful_call_response()
+
+	def wait_for_domain(self):
+		try:
+			bus = dbus.SystemBus()
+			proxy = bus.get_object("org.freedesktop.sssd.infopipe",
+				"/org/freedesktop/sssd/infopipe/Domains/EDU_2eGVA_2eES")
+
+			IsOnline = proxy.get_dbus_method("IsOnline","org.freedesktop.sssd.infopipe.Domains.Domain")
+
+			retries = 10
+
+			while IsOnline()==False and retries>0:
+				time.sleep(1)
+				retries = retries - 1
+
+			return n4d.responses.build_successful_call_response(retries>0)
+		except Exception as e:
+			return n4d.responses.build_failed_call_response(EscolesConectades.ERROR_WAITING_FOR_DOMAIN,"Error waiting for domain.")
