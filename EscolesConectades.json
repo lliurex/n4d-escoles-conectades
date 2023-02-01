@@ -49,6 +49,16 @@
             "allowed_groups": [
                 "anonymous"
             ]
+        },
+        "get_autologin" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "set_autologin" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
         }
     }
 }

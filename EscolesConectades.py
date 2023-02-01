@@ -179,6 +179,14 @@ class EscolesConectades:
 		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES",value)
 		return n4d.responses.build_successful_call_response()
 
+	def get_autologin(self):
+		var = n4d.server.core.Core.get_core().get_variable("SDDM_ESCOLES_CONECTADES_AUTOLOGIN")
+		return n4d.responses.build_successful_call_response(var["return"])
+
+	def set_autologin(self,value):
+		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES_AUTOLOGIN",value)
+		return n4d.responses.build_successful_call_response()
+
 	def wait_for_domain(self):
 		try:
 			bus = dbus.SystemBus()
