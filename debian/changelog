@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.0.4.0) focal; urgency=medium
+
+  * Added some room for autologin settings
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Wed, 01 Feb 2023 16:10:51 +0100
+
 n4d-escoles-conectades (1.0.3.0) lliurex22; urgency=medium
 
   * Fix missing n4d method settings
