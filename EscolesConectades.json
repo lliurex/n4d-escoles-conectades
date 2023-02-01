@@ -44,6 +44,21 @@
             "allowed_groups": [
                 "anonymous"
             ]
+        },
+        "wait_for_domain" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_autologin" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "set_autologin" : {
+            "allowed_groups": [
+                "anonymous"
+            ]
         }
     }
 }
