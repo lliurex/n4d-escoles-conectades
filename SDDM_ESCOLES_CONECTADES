@@ -3,12 +3,12 @@
     {
         "value":0,
         "volatile":false,
-        "description": "BIT 0: Enabled/Disabled. BIT 1: ALU/PROF"
+        "description": "0: Disabled, 1: Teachers, 2: Students, 3: Student autologin (alumnat)"
     },
     "SDDM_ESCOLES_CONECTADES_AUTOLOGIN":
     {
-        "value":"::",
+        "value":"",
         "volatile":false,
-        "description": "Autologin Wifi settings"
+        "description": "Autologin Wifi pass key"
     }
 }
