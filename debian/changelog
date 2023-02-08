@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.0.5.0) focal; urgency=medium
+
+  * Updated n4d variable file and installation process
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Wed, 08 Feb 2023 16:24:06 +0100
+
 n4d-escoles-conectades (1.0.4.0) focal; urgency=medium
 
   * Added some room for autologin settings

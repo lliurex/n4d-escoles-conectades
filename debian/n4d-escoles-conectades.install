@@ -1,4 +1,3 @@
 *.json    /etc/n4d/conf.d/
 *.py    /usr/share/n4d/python-plugins/
 *.service    /usr/lib/systemd/user/
-SDDM_ESCOLES_CONECTADES /var/lib/n4d/variables/
