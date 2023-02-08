@@ -2,7 +2,7 @@ Source: n4d-escoles-conectades
 Section: misc
 Priority: standard
 Maintainer: Equipo LliureX <lliurex@gva.es>
-Build-Depends: debhelper (>= 7), python3, n4d(>=0.900), python3-networkmanager
+Build-Depends: debhelper (>= 7), python3, n4d(>=0.900), python3-networkmanager, n4d-dev
 Standards-Version: 3.9.3
 
 Package: n4d-escoles-conectades
