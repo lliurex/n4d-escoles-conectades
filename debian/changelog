@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.0.5.2) jammy; urgency=medium
+
+  * Jammy release.
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 31 Aug 2023 10:58:40 +0200
+
 n4d-escoles-conectades (1.0.5.1) focal; urgency=medium
 
   * Added sssd-dbus as dependency
