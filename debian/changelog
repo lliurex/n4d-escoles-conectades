@@ -1,3 +1,9 @@
+n4d-escoles-conectades (1.1.0.0) jammy; urgency=medium
+
+  * Added a cdc enabled check
+
+ -- Enrique Medina Gremaldos <quique@necos.es>  Thu, 07 Mar 2024 10:19:02 +0100
+
 n4d-escoles-conectades (1.0.5.2) jammy; urgency=medium
 
   * Jammy release.
