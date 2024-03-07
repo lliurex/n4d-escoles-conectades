@@ -30,6 +30,7 @@ import hashlib
 import binascii
 import os
 import dbus
+from pathlib import Path
 
 def _wpa_psk(ssid,password):
 	dk = hashlib.pbkdf2_hmac('sha1', str.encode(password), str.encode(ssid), 4096, 32)
@@ -186,6 +187,10 @@ class EscolesConectades:
 	def set_autologin(self,value):
 		n4d.server.core.Core.get_core().set_variable("SDDM_ESCOLES_CONECTADES_AUTOLOGIN",value)
 		return n4d.responses.build_successful_call_response()
+
+	def is_cdc_enabled(self):
+		sssd_conf = Path("/etc/sssd/sssd.conf")
+		return n4d.responses.build_successful_call_response(sssd_conf.exists())
 
 	def wait_for_domain(self):
 		try:
